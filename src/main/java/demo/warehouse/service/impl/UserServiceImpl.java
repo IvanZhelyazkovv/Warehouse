@@ -6,7 +6,6 @@ import demo.warehouse.entity.Role;
 import demo.warehouse.entity.User;
 import demo.warehouse.repository.RoleRepository;
 import demo.warehouse.repository.UserRepository;
-import demo.warehouse.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -35,8 +34,6 @@ public class UserServiceImpl implements UserService {
         user.setName(userDto.getFirstName() + " " + userDto.getLastName());
         user.setEmail(userDto.getEmail());
 
-        //encrypt the password once we integrate spring security
-        //user.setPassword(userDto.getPassword());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         Role role = roleRepository.findByName(userDto.getRole().toUpperCase());
         if(role == null){
@@ -54,7 +51,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDto> findAllUsers() {
         List<User> users = userRepository.findAll();
-        return users.stream().map((user) -> convertEntityToDto(user))
+        return users.stream().map(this::convertEntityToDto)
                 .collect(Collectors.toList());
     }
 

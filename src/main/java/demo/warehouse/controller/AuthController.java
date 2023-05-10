@@ -15,8 +15,6 @@ import demo.warehouse.repository.RoleRepository;
 import demo.warehouse.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.List;
-
 @Controller
 public class AuthController {
     private PasswordEncoder passwordEncoder;
@@ -65,12 +63,5 @@ public class AuthController {
         }
         userService.saveUser(user);
         return "redirect:/register?success";
-    }
-
-    @GetMapping("/users")
-    public String listRegisteredUsers(Model model) {
-        List<UserDto> users = userService.findAllUsers();
-        model.addAttribute("users", users);
-        return "users";
     }
 }
