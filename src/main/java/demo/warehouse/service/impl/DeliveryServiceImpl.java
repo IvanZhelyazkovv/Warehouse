@@ -2,8 +2,11 @@ package demo.warehouse.service.impl;
 
 import demo.warehouse.dto.DeliveryDto;
 import demo.warehouse.entity.Delivery;
+import demo.warehouse.entity.Goods;
 import demo.warehouse.entity.Warehouse;
 import demo.warehouse.repository.DeliveryRepository;
+import demo.warehouse.repository.GoodsRepository;
+import demo.warehouse.repository.WarehouseRepository;
 import demo.warehouse.service.DeliveryService;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +19,17 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     private DeliveryRepository deliveryRepository;
 
-    public DeliveryServiceImpl(DeliveryRepository deliveryRepository) {
+    private WarehouseRepository warehouseRepository;
+
+    private GoodsRepository goodsRepository;
+
+    public DeliveryServiceImpl(
+            DeliveryRepository deliveryRepository,
+            GoodsRepository goodsRepository,
+            WarehouseRepository warehouseRepository
+    ) {
+        this.warehouseRepository = warehouseRepository;
+        this.goodsRepository = goodsRepository;
         this.deliveryRepository = deliveryRepository;
     }
 
@@ -35,7 +48,19 @@ public class DeliveryServiceImpl implements DeliveryService {
     public void updateDelivery(Delivery delivery, Warehouse warehouse, String userName) {
         delivery.setAcceptedBy(userName);
         warehouse.setCashbox(warehouse.getCashbox() - delivery.getPrice());
+        warehouseRepository.save(warehouse);
         deliveryRepository.save(delivery);
+
+        Goods goods = goodsRepository.findByName(delivery.getGoods());
+        if (goods != null) {
+            goods.setSize(goods.getSize() + delivery.getSize());
+        } else {
+            goods = new Goods();
+            goods.setName(delivery.getGoods());
+            goods.setSize(delivery.getSize());
+        }
+
+        goodsRepository.save(goods);
     }
 
     @Override

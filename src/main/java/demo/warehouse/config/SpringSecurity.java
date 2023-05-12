@@ -35,6 +35,8 @@ public class SpringSecurity {
                                 .requestMatchers("/make/delivery/**").hasAnyRole("ADMIN", "SUPPLIER")
                                 .requestMatchers("/deliveries").hasAnyRole("ADMIN", "OPERATOR")
                                 .requestMatchers("/accept/delivery/**").hasAnyRole("ADMIN", "OPERATOR")
+                                .requestMatchers("make/listing/**").hasAnyRole("ADMIN", "OPERATOR")
+                                .requestMatchers("/stock").hasAnyRole("ADMIN", "OPERATOR")
                 ).formLogin(
                         form -> form
                                 .loginPage("/login")
