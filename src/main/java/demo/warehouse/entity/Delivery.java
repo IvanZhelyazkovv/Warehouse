@@ -41,6 +41,9 @@ public class Delivery {
     @UpdateTimestamp
     private Date acceptedAt;
 
-    @Column(name = "accepted_by")
-    private String acceptedBy;
+    @Column(name = "worked_by")
+    private String workedBy;
+
+    @Column(name = "status")
+    private String status = "pending";
 }

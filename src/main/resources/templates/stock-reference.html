@@ -31,49 +31,44 @@
 </nav>
 <div class="container">
     <div class="row">
-        <h1> Deliveries </h1>
-        <div th:if="${param.success}">
-            <div class="alert alert-info">You've accepted the delivery!
-            </div>
-        </div>
-        <div th:if="${param.reject}">
-            <div class="alert alert-info">You've rejected the delivery!
-            </div>
-        </div>
-        <div th:if="${param.critical}">
-            <div class="alert alert-danger">Our cashbox is below 10k!
-            </div>
-        </div>
+        <h2> Income Goods </h2>
     </div>
     <table class="table table-striped table-bordered table-hover">
         <thead class="table-dark">
         <tr>
-            <th>Supplier Name</th>
-            <th>Worked By</th>
             <th>Goods type</th>
             <th>Size</th>
-            <th>Price</th>
-            <th>Delivery Date</th>
-            <th>Status</th>
-            <th>Actions</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="delivery: ${deliveries}">
-            <td th:text="${delivery.supplierName}"></td>
-            <td th:text="${delivery.workedBy}"></td>
-            <td th:text="${delivery.goods}"></td>
-            <td th:text="${delivery.size}"></td>
-            <td th:text="${delivery.price}"></td>
-            <td th:text="${delivery.deliveredAt}"></td>
-            <td th:text="${delivery.status}"></td>
-            <td th:if="${delivery.status == 'pending'}">
-                <a th:href="@{'/accept/delivery/' + ${delivery.id}}">Accept</a>
-                <a th:href="@{'/reject/delivery/' + ${delivery.id}}">Reject</a>
-            </td>
+        <tr th:each="element: ${incomeGoods}">
+            <td th:text="${element.name}"></td>
+            <td th:text="${element.size}"></td>
         </tr>
         </tbody>
     </table>
+    <div class="row">
+        <h2> Sold Goods </h2>
+    </div>
+    <table class="table table-striped table-bordered table-hover">
+        <thead class="table-dark">
+        <tr>
+            <th>Goods type</th>
+            <th>Size</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="element: ${soldGoods}">
+            <td th:text="${element.name}"></td>
+            <td th:text="${element.size}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="row">
+        <div class="alert alert-info" th:text="${'income for the period: ' + income}"></div>
+        <div class="alert alert-info" th:text="${'expenses for the period: ' + expenses}"></div>
+        <div class="alert alert-info" th:text="${'profit for the period: ' + profit}"></div>
+    </div>
 </div>
 </body>
 </html>

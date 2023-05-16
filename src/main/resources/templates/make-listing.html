@@ -33,16 +33,16 @@
             <div class="card-body">
                 <form method="post" role="form" th:action="@{listing/save}" th:object="${listing}">
                     <div class="form-group mb-3">
-                        <label class="form-label">Your Name</label>
+                        <label class="form-label">Firm name</label>
                         <input class="form-control"
-                               id="operatorName"
-                               name="operatorName"
-                               placeholder="Enter your name"
-                               th:field="*{operatorName}"
+                               id="firmName"
+                               name="firmName"
+                               placeholder="Enter firm name"
+                               th:field="*{firmName}"
                                type="text"
                         />
-                        <p th:errors="*{operatorName}" class="text-danger"
-                           th:if="${#fields.hasErrors('operatorName')}">
+                        <p th:errors="*{firmName}" class="text-danger"
+                           th:if="${#fields.hasErrors('firmName')}">
                         </p>
                     </div>
 
@@ -87,7 +87,7 @@
                         </p>
                     </div>
                     <div class="form-group mb-3">
-                        <button class="btn btn-primary" type="submit">Deliver</button>
+                        <button class="btn btn-primary" type="submit">Sell</button>
                     </div>
                 </form>
             </div>

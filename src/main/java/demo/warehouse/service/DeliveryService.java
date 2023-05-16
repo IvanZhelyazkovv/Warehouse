@@ -11,14 +11,13 @@ public interface DeliveryService {
 
     void createDelivery(DeliveryDto deliveryDto);
 
-    void updateDelivery(Delivery delivery, Warehouse warehouse, String userName);
+    String updateDelivery(Delivery delivery, Warehouse warehouse, String userName, String status);
 
     Delivery findID(int id);
 
     Delivery findByDeliveredAt(Date deliveredAt);
 
-    Delivery findByAcceptedAt(Date acceptedAt);
-
+    List<Delivery> findByPeriod(Date dateFrom, Date dateTo);
     Delivery findBySupplier(String supplier);
 
     List<DeliveryDto> findAllDeliveries();

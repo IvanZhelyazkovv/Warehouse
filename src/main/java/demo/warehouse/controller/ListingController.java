@@ -1,16 +1,25 @@
 package demo.warehouse.controller;
 
+import demo.warehouse.dto.DeliveryDto;
 import demo.warehouse.dto.ListingDto;
+import demo.warehouse.entity.Delivery;
 import demo.warehouse.entity.Goods;
+import demo.warehouse.entity.Listing;
+import demo.warehouse.entity.Warehouse;
 import demo.warehouse.repository.GoodsRepository;
 import demo.warehouse.service.ListingService;
 import jakarta.validation.Valid;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import java.util.List;
 
 @Controller
 public class ListingController {
@@ -31,21 +40,35 @@ public class ListingController {
     }
 
     @PostMapping("make/listing/save")
-    public String ListingGoods(
-            @Valid @ModelAttribute("listing") ListingDto listing,
-            BindingResult result,
-            Model model) {
-        Goods goods = goodsRepository.findByName(listing.getGoods());
-        Integer size = goods.getSize();
-        if (size <= listing.getSize()) {
-            result.rejectValue("size", null, "We don't have that amount");
-            return "deliveries";
-        }
-        if (result.hasErrors()) {
-            model.addAttribute("listing", listing);
-            return "make-listing";
-        }
+    public String ListingGoods(@Valid @ModelAttribute("listing") ListingDto listing) {
         listingService.listGoods(listing);
         return "redirect:/make/listing?success";
+    }
+
+    @GetMapping("accept/offer/{id}")
+    public String acceptOffer(@PathVariable("id") int id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Listing listing = listingService.findByid((long) id);
+
+        String message = listingService.updateOffer(listing, auth.getName(), "confirmed");
+
+        return "redirect:/listings?" + message;
+    }
+
+    @GetMapping("reject/offer/{id}")
+    public String rejectOffer(@PathVariable("id") int id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Listing listing = listingService.findByid((long) id);
+
+        listingService.updateOffer(listing, auth.getName(), "rejected");
+
+        return "redirect:/listings?reject";
+    }
+
+    @GetMapping("listings")
+    public String listOffers(Model model) {
+        List<ListingDto> listings = listingService.findAllListings();
+        model.addAttribute("listings", listings);
+        return "listing";
     }
 }

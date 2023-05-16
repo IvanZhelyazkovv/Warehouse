@@ -7,11 +7,12 @@ import java.util.Date;
 import java.util.List;
 
 public interface ListingService {
-    void listGoods(ListingDto listingDto);
+    void listGoods(ListingDto ListingDto);
 
+    String updateOffer(Listing listing, String userName, String status);
     Listing findByid(Long id);
 
-    Listing findByOperatorName(String operatorName);
+    Listing findByFirmName(String firmName);
 
     Listing findByListedAt(Date listedAt);
 

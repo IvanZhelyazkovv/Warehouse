@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,18 +40,35 @@ public class ListingServiceImpl implements ListingService {
     @Override
     public void listGoods(ListingDto listingDto) {
         Listing listing = new Listing();
-        listing.setOperatorName(listingDto.getOperatorName());
+        listing.setFirmName(listingDto.getFirmName());
         listing.setGoods(listingDto.getGoods());
         listing.setSize(listingDto.getSize());
         listing.setPrice(listingDto.getPrice());
         listingRepository.save(listing);
+    }
 
-        Goods goods = goodsRepository.findByName(listing.getGoods());
-        goods.setSize(goods.getSize() - listing.getSize());
-        goodsRepository.save(goods);
-        Warehouse warehouse = warehouseService.findByName("demo");
-        warehouse.setCashbox(warehouse.getCashbox() + listing.getPrice());
-        warehouseRepository.save(warehouse);
+    @Override
+    public String updateOffer(Listing listing, String userName, String status)  {
+        String message = "success";
+        listing.setStatus(status);
+        listing.setWorkedBy(userName);
+        if (!Objects.equals(status, "rejected")) {
+            Goods good = goodsRepository.findByName(listing.getGoods());
+            good.setSize(good.getSize() - listing.getSize());
+            goodsRepository.save(good);
+
+            if (good.getSize() <= 100) {
+                message = "critical";
+            }
+
+            Warehouse warehouse = warehouseService.findByName("demo");
+            warehouse.setCashbox(warehouse.getCashbox() + listing.getPrice());
+            warehouseRepository.save(warehouse);
+        }
+
+        listingRepository.save(listing);
+
+        return message;
     }
 
     @Override
@@ -59,8 +77,8 @@ public class ListingServiceImpl implements ListingService {
     }
 
     @Override
-    public Listing findByOperatorName(String operatorName) {
-        return listingRepository.findByOperatorName(operatorName);
+    public Listing findByFirmName(String firmName) {
+        return listingRepository.findByFirmName(firmName);
     }
 
     @Override
@@ -82,11 +100,15 @@ public class ListingServiceImpl implements ListingService {
 
     private ListingDto convertEntityToDto(Listing listing) {
         ListingDto listingDto = new ListingDto();
-        listingDto.setOperatorName(listing.getOperatorName());
+        listingDto.setId(listing.getId());
+        listingDto.setFirmName(listing.getFirmName());
         listingDto.setPrice(listing.getPrice());
         listingDto.setGoods(listing.getGoods());
         listingDto.setSize(listing.getSize());
         listingDto.setListedAt(listing.getListedAt());
+        listingDto.setAcceptedAt(listing.getAcceptedAt());
+        listingDto.setWorkedBy(listing.getWorkedBy());
+        listingDto.setStatus(listing.getStatus());
         return listingDto;
     }
 }

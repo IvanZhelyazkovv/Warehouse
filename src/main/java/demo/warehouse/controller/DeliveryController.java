@@ -10,7 +10,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,18 +37,8 @@ public class DeliveryController {
     }
 
     @PostMapping("make/delivery/save")
-    public String makeDeliverySave(@Valid @ModelAttribute("delivery") DeliveryDto delivery,
-                                   BindingResult result,
-                                   Model model) {
+    public String makeDeliverySave(@Valid @ModelAttribute("delivery") DeliveryDto delivery) {
         Warehouse warehouse = warehouseService.findByName("demo");
-        Integer noMoney = warehouse.getCashbox();
-        if (noMoney <= 0) {
-            result.rejectValue("price", null, "We can't accept deliveries right now");
-        }
-        if (result.hasErrors()) {
-            model.addAttribute("delivery", delivery);
-            return "make-delivery";
-        }
         deliveryService.createDelivery(delivery);
         return "redirect:/make/delivery?success";
     }
@@ -67,8 +56,19 @@ public class DeliveryController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Delivery delivery = deliveryService.findID(id);
 
-        deliveryService.updateDelivery(delivery, warehouse, auth.getName());
+        String message = deliveryService.updateDelivery(delivery, warehouse, auth.getName(), "confirmed");
 
-        return "redirect:/deliveries?success";
+        return "redirect:/deliveries?" + message;
+    }
+
+    @GetMapping("reject/delivery/{id}")
+    public String rejectDelivery(@PathVariable("id") int id) {
+        Warehouse warehouse = warehouseService.findByName("demo");
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Delivery delivery = deliveryService.findID(id);
+
+        deliveryService.updateDelivery(delivery, warehouse, auth.getName(), "rejected");
+
+        return "redirect:/deliveries?reject";
     }
 }
