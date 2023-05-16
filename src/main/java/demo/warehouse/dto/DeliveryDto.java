@@ -25,5 +25,7 @@ public class DeliveryDto {
     private Integer price;
     private Date deliveredAt;
     private Date acceptedAt;
-    private String acceptedBy;
+    private String workedBy;
+    @NotNull
+    private String status = "pending";
 }

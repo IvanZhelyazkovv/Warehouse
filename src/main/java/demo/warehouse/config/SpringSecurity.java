@@ -34,9 +34,12 @@ public class SpringSecurity {
                                 .requestMatchers("/defaultConfig").permitAll()
                                 .requestMatchers("/make/delivery/**").hasAnyRole("ADMIN", "SUPPLIER")
                                 .requestMatchers("/deliveries").hasAnyRole("ADMIN", "OPERATOR")
-                                .requestMatchers("/accept/delivery/**").hasAnyRole("ADMIN", "OPERATOR")
-                                .requestMatchers("make/listing/**").hasAnyRole("ADMIN", "OPERATOR")
+                                .requestMatchers("/accept/**").hasAnyRole("ADMIN", "OPERATOR")
+                                .requestMatchers("/reject/**").hasAnyRole("ADMIN", "OPERATOR")
+                                .requestMatchers("/make/listing/**").hasAnyRole("ADMIN", "OPERATOR")
                                 .requestMatchers("/stock").hasAnyRole("ADMIN", "OPERATOR")
+                                .requestMatchers("/reference/**").hasAnyRole("ADMIN", "OPERATOR")
+                                .requestMatchers("/listings").hasAnyRole("ADMIN", "OPERATOR")
                 ).formLogin(
                         form -> form
                                 .loginPage("/login")

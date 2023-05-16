@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,22 +46,33 @@ public class DeliveryServiceImpl implements DeliveryService {
     }
 
     @Override
-    public void updateDelivery(Delivery delivery, Warehouse warehouse, String userName) {
-        delivery.setAcceptedBy(userName);
-        warehouse.setCashbox(warehouse.getCashbox() - delivery.getPrice());
-        warehouseRepository.save(warehouse);
-        deliveryRepository.save(delivery);
+    public String updateDelivery(Delivery delivery, Warehouse warehouse, String userName, String status) {
+        String message = "success";
+        delivery.setStatus(status);
+        delivery.setWorkedBy(userName);
+        if (!Objects.equals(status, "rejected")) {
+            warehouse.setCashbox(warehouse.getCashbox() - delivery.getPrice());
+            warehouseRepository.save(warehouse);
 
-        Goods goods = goodsRepository.findByName(delivery.getGoods());
-        if (goods != null) {
-            goods.setSize(goods.getSize() + delivery.getSize());
-        } else {
-            goods = new Goods();
-            goods.setName(delivery.getGoods());
-            goods.setSize(delivery.getSize());
+            if (warehouse.getCashbox() <= 10000) {
+                message = "critical";
+            }
+
+            Goods goods = goodsRepository.findByName(delivery.getGoods());
+            if (goods != null) {
+                goods.setSize(goods.getSize() + delivery.getSize());
+            } else {
+                goods = new Goods();
+                goods.setName(delivery.getGoods());
+                goods.setSize(delivery.getSize());
+            }
+
+            goodsRepository.save(goods);
         }
 
-        goodsRepository.save(goods);
+        deliveryRepository.save(delivery);
+
+        return message;
     }
 
     @Override
@@ -74,8 +86,8 @@ public class DeliveryServiceImpl implements DeliveryService {
     }
 
     @Override
-    public Delivery findByAcceptedAt(Date acceptedAt) {
-        return deliveryRepository.findByAcceptedAt(acceptedAt);
+    public List<Delivery> findByPeriod(Date dateFrom, Date dateTo) {
+        return deliveryRepository.findByPeriod(dateFrom, dateTo);
     }
 
     @Override
@@ -99,7 +111,8 @@ public class DeliveryServiceImpl implements DeliveryService {
         deliveryDto.setSize(delivery.getSize());
         deliveryDto.setDeliveredAt(delivery.getDeliveredAt());
         deliveryDto.setAcceptedAt(delivery.getAcceptedAt());
-        deliveryDto.setAcceptedBy(delivery.getAcceptedBy());
+        deliveryDto.setWorkedBy(delivery.getWorkedBy());
+        deliveryDto.setStatus(delivery.getStatus());
         return deliveryDto;
     }
 }

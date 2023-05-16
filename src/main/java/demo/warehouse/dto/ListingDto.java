@@ -16,7 +16,7 @@ import java.util.Date;
 public class ListingDto {
     private Long id;
     @NotEmpty
-    private String operatorName;
+    private String firmName;
     @NotEmpty
     private String goods;
     @NotNull
@@ -24,4 +24,8 @@ public class ListingDto {
     @NotNull
     private Integer price;
     private Date listedAt;
+    private Date acceptedAt;
+    private String workedBy;
+    @NotNull
+    private String status = "pending";
 }
