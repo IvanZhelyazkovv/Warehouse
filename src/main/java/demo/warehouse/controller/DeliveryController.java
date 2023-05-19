@@ -6,6 +6,7 @@ import demo.warehouse.entity.Warehouse;
 import demo.warehouse.service.DeliveryService;
 import demo.warehouse.service.WarehouseService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -20,8 +21,10 @@ import java.util.List;
 @Controller
 public class DeliveryController {
 
+    @Autowired
     private WarehouseService warehouseService;
 
+    @Autowired
     private DeliveryService deliveryService;
 
     public DeliveryController(WarehouseService warehouseService, DeliveryService deliveryService) {
@@ -38,7 +41,6 @@ public class DeliveryController {
 
     @PostMapping("make/delivery/save")
     public String makeDeliverySave(@Valid @ModelAttribute("delivery") DeliveryDto delivery) {
-        Warehouse warehouse = warehouseService.findByName("demo");
         deliveryService.createDelivery(delivery);
         return "redirect:/make/delivery?success";
     }
@@ -47,6 +49,7 @@ public class DeliveryController {
     public String listDeliveries(Model model) {
         List<DeliveryDto> deliveries = deliveryService.findAllDeliveries();
         model.addAttribute("deliveries", deliveries);
+        model.addAttribute("reference", false);
         return "deliveries";
     }
 

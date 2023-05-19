@@ -11,22 +11,16 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import demo.warehouse.repository.RoleRepository;
-import demo.warehouse.repository.UserRepository;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Controller
 public class AuthController {
-    private PasswordEncoder passwordEncoder;
-    private RoleRepository roleRepository;
-    private UserRepository userRepository;
     private UserService userService;
 
     public AuthController(UserService userService) {
         this.userService = userService;
     }
 
-    @GetMapping("index")
+    @GetMapping("/")
     public String home() {
         return "index";
     }
@@ -36,7 +30,6 @@ public class AuthController {
         return "login";
     }
 
-    // handler method to handle user registration request
     @GetMapping("register")
     public String showRegistrationForm(Model model, Authentication authentication) {
         if (authentication != null) {
@@ -48,7 +41,6 @@ public class AuthController {
         return "register";
     }
 
-    // handler method to handle register user form submit request
     @PostMapping("/register/save")
     public String registration(@Valid @ModelAttribute("user") UserDto user,
                                BindingResult result,

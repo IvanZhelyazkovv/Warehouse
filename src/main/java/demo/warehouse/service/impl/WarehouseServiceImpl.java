@@ -1,6 +1,5 @@
 package demo.warehouse.service.impl;
 
-import demo.warehouse.dto.WarehouseDto;
 import demo.warehouse.entity.Warehouse;
 import demo.warehouse.repository.WarehouseRepository;
 import demo.warehouse.service.WarehouseService;
@@ -13,14 +12,6 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     public WarehouseServiceImpl(WarehouseRepository warehouseRepository) {
         this.warehouseRepository = warehouseRepository;
-    }
-
-    @Override
-    public void createWarehouse(WarehouseDto warehouseDto) {
-        Warehouse warehouse = new Warehouse();
-        warehouse.setName(warehouseDto.getName());
-        warehouse.setCashbox(warehouseDto.getCashbox());
-        warehouseRepository.save(warehouse);
     }
 
     @Override

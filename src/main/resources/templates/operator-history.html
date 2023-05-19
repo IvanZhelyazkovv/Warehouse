@@ -37,6 +37,7 @@
         <thead class="table-dark">
         <tr>
             <th>Supplier Name</th>
+            <th>Worked By</th>
             <th>Goods type</th>
             <th>Size</th>
             <th>Price</th>
@@ -47,6 +48,7 @@
         <tbody>
         <tr th:each="delivery: ${deliveries}">
             <td th:text="${delivery.supplierName}"></td>
+            <td th:text="${delivery.workedBy}"></td>
             <td th:text="${delivery.goods}"></td>
             <td th:text="${delivery.size}"></td>
             <td th:text="${delivery.price}"></td>
@@ -68,9 +70,8 @@
             <th>Goods type</th>
             <th>Size</th>
             <th>Price</th>
-            <th>Delivery Date</th>
+            <th>Offered Date</th>
             <th>Status</th>
-            <th>Actions</th>
         </tr>
         </thead>
         <tbody>

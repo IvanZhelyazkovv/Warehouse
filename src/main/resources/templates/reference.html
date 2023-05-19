@@ -42,7 +42,16 @@
                 <option value="Operator">Operator</option>
                 <option value="Deliveries">Deliveries</option>
                 <option value="Listings">Listings</option>
-                <option value="stock">stock</option>
+                <option value="Stock">Stock</option>
+            </select>
+        </div>
+        <div class="form-group mb-3">
+            <label class="form-label" for="types">Choose a User</label>
+            <select class="form-control"
+                    id="user"
+                    name="user"
+                    >
+                <option th:each="user: ${users}" th:text="${user.getEmail()}" th:value="${user.getEmail()}"></option>
             </select>
         </div>
         <div>

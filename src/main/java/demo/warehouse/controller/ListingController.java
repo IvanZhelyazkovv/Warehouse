@@ -1,11 +1,7 @@
 package demo.warehouse.controller;
 
-import demo.warehouse.dto.DeliveryDto;
 import demo.warehouse.dto.ListingDto;
-import demo.warehouse.entity.Delivery;
-import demo.warehouse.entity.Goods;
 import demo.warehouse.entity.Listing;
-import demo.warehouse.entity.Warehouse;
 import demo.warehouse.repository.GoodsRepository;
 import demo.warehouse.service.ListingService;
 import jakarta.validation.Valid;
@@ -13,7 +9,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -69,6 +64,7 @@ public class ListingController {
     public String listOffers(Model model) {
         List<ListingDto> listings = listingService.findAllListings();
         model.addAttribute("listings", listings);
-        return "listing";
+        model.addAttribute("reference", false);
+        return "listings";
     }
 }

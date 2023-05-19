@@ -11,7 +11,6 @@ import demo.warehouse.service.ListingService;
 import demo.warehouse.service.WarehouseService;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -48,7 +47,7 @@ public class ListingServiceImpl implements ListingService {
     }
 
     @Override
-    public String updateOffer(Listing listing, String userName, String status)  {
+    public String updateOffer(Listing listing, String userName, String status) {
         String message = "success";
         listing.setStatus(status);
         listing.setWorkedBy(userName);
@@ -74,21 +73,6 @@ public class ListingServiceImpl implements ListingService {
     @Override
     public Listing findByid(Long id) {
         return listingRepository.findByid((long) id);
-    }
-
-    @Override
-    public Listing findByFirmName(String firmName) {
-        return listingRepository.findByFirmName(firmName);
-    }
-
-    @Override
-    public Listing findByListedAt(Date listedAt) {
-        return listingRepository.findByListedAt(listedAt);
-    }
-
-    @Override
-    public Listing findByPrice(int price) {
-        return listingRepository.findByPrice(price);
     }
 
     @Override

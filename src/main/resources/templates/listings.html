@@ -49,25 +49,27 @@
         <thead class="table-dark">
         <tr>
             <th>Firm Name</th>
+            <th>Worked By</th>
             <th>Goods type</th>
             <th>Size</th>
             <th>Price</th>
             <th>Delivery Date</th>
             <th>Status</th>
-            <th>Actions</th>
+            <th th:if="${reference == false}">Actions</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="listing: ${listings}">
             <td th:text="${listing.firmName}"></td>
+            <td th:text="${listing.workedBy}"></td>
             <td th:text="${listing.goods}"></td>
             <td th:text="${listing.size}"></td>
             <td th:text="${listing.price}"></td>
             <td th:text="${listing.listedAt}"></td>
             <td th:text="${listing.status}"></td>
-            <td th:if="${listing.status == 'pending'}">
-                <a th:href="@{'/accept/offer/' + ${listing.id}}">Accept</a>
-                <a th:href="@{'/reject/offer/' + ${listing.id}}">Reject</a>
+            <td th:if="${reference == false}">
+                <a th:if="${listing.status == 'pending'}" th:href="@{'/accept/offer/' + ${listing.id}}">Accept</a>
+                <a th:if="${listing.status == 'pending'}" th:href="@{'/reject/offer/' + ${listing.id}}">Reject</a>
             </td>
         </tr>
         </tbody>

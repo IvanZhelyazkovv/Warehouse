@@ -10,7 +10,6 @@ import demo.warehouse.repository.WarehouseRepository;
 import demo.warehouse.service.DeliveryService;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -78,21 +77,6 @@ public class DeliveryServiceImpl implements DeliveryService {
     @Override
     public Delivery findID(int id) {
         return deliveryRepository.findByid((long) id);
-    }
-
-    @Override
-    public Delivery findByDeliveredAt(Date deliveredAt) {
-        return deliveryRepository.findByDeliveredAt(deliveredAt);
-    }
-
-    @Override
-    public List<Delivery> findByPeriod(Date dateFrom, Date dateTo) {
-        return deliveryRepository.findByPeriod(dateFrom, dateTo);
-    }
-
-    @Override
-    public Delivery findBySupplier(String supplier) {
-        return deliveryRepository.findBySupplierName(supplier);
     }
 
     @Override
