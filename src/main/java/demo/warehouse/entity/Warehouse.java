@@ -11,17 +11,16 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="warehouse")
-public class Warehouse
-{
+@Table(name = "warehouse")
+public class Warehouse {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable=false, unique=true)
+    @Column(nullable = false, unique = true)
     private String name;
 
     @Column()
-    private Integer cashbox = 0 ;
+    private Integer cashbox = 0;
 
 }

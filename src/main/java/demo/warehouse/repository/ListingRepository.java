@@ -1,6 +1,5 @@
 package demo.warehouse.repository;
 
-import demo.warehouse.entity.Delivery;
 import demo.warehouse.entity.Listing;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -12,20 +11,17 @@ public interface ListingRepository extends JpaRepository<Listing, Long> {
 
     Listing findByid(Long id);
 
-    Listing findByFirmName(String firmName);
+    Listing findByGoods(String goods);
 
-    Listing findByListedAt(Date listedAt);
-
-    Listing findByPrice(int price);
-
-    List<Listing> findByGoods(String goods);
-
-    @Query("SELECT d FROM Listing d WHERE d.acceptedAt >= :dateFrom and d.acceptedAt <= :dateTo")
+    @Query("SELECT l FROM Listing l WHERE l.acceptedAt >= :dateFrom and l.acceptedAt <= :dateTo")
     List<Listing> findByPeriod(Date dateFrom, Date dateTo);
 
-    @Query("SELECT d FROM Listing d WHERE d.acceptedAt >= :dateFrom and d.acceptedAt <= :dateTo and d.workedBy = :operator")
+    @Query("SELECT l FROM Listing l WHERE l.acceptedAt >= :dateFrom and l.acceptedAt <= :dateTo and l.goods = :good")
+    List<Listing> findByPeriodAndGood(Date dateFrom, Date dateTo,String good);
+
+    @Query("SELECT l FROM Listing l WHERE l.acceptedAt >= :dateFrom and l.acceptedAt <= :dateTo and l.workedBy = :operator")
     List<Listing> findByPeriodAndOperator(Date dateFrom, Date dateTo, String operator);
 
-    @Query("SELECT SUM(d.price) FROM Listing d WHERE d.acceptedAt >= :dateFrom and d.acceptedAt <= :dateTo and d.status = 'confirmed' ")
+    @Query("SELECT SUM(l.price) FROM Listing l WHERE l.acceptedAt >= :dateFrom and l.acceptedAt <= :dateTo and l.status = 'confirmed' ")
     Integer findIncome(Date dateFrom, Date dateTo);
 }

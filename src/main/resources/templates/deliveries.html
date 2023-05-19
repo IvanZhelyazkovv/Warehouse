@@ -55,7 +55,7 @@
             <th>Price</th>
             <th>Delivery Date</th>
             <th>Status</th>
-            <th>Actions</th>
+            <th th:if="${reference == false}">Actions</th>
         </tr>
         </thead>
         <tbody>
@@ -67,9 +67,9 @@
             <td th:text="${delivery.price}"></td>
             <td th:text="${delivery.deliveredAt}"></td>
             <td th:text="${delivery.status}"></td>
-            <td th:if="${delivery.status == 'pending'}">
-                <a th:href="@{'/accept/delivery/' + ${delivery.id}}">Accept</a>
-                <a th:href="@{'/reject/delivery/' + ${delivery.id}}">Reject</a>
+            <td th:if="${reference == false}">
+                <a th:if="${delivery.status == 'pending'}" th:href="@{'/accept/delivery/' + ${delivery.id}}">Accept</a>
+                <a th:if="${delivery.status == 'pending'}" th:href="@{'/reject/delivery/' + ${delivery.id}}">Reject</a>
             </td>
         </tr>
         </tbody>

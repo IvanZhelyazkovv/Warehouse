@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
 
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         Role role = roleRepository.findByName(userDto.getRole().toUpperCase());
-        if(role == null){
+        if (role == null) {
             role = checkRoleExist(userDto.getRole().toUpperCase());
         }
         user.setRoles(Arrays.asList(role));
@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 
-    private UserDto convertEntityToDto(User user){
+    private UserDto convertEntityToDto(User user) {
         UserDto userDto = new UserDto();
         String[] name = user.getName().split(" ");
         userDto.setFirstName(name[0]);

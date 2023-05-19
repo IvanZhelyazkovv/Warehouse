@@ -1,13 +1,12 @@
 package demo.warehouse.controller;
 
 import demo.warehouse.dto.GoodsDto;
-import demo.warehouse.entity.Delivery;
-import demo.warehouse.entity.Goods;
-import demo.warehouse.entity.Listing;
-import demo.warehouse.entity.Warehouse;
+import demo.warehouse.dto.UserDto;
+import demo.warehouse.entity.*;
 import demo.warehouse.repository.DeliveryRepository;
 import demo.warehouse.repository.GoodsRepository;
 import demo.warehouse.repository.ListingRepository;
+import demo.warehouse.service.UserService;
 import demo.warehouse.service.WarehouseService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.Authentication;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
@@ -28,13 +28,16 @@ public class WarehouseController {
     private DeliveryRepository deliveryRepository;
 
     private ListingRepository listingRepository;
+    private UserService userService;
 
     public WarehouseController(
             GoodsRepository goodsRepository,
             WarehouseService warehouseService,
             DeliveryRepository deliveryRepository,
-            ListingRepository listingRepository
+            ListingRepository listingRepository,
+            UserService userService
     ) {
+        this.userService = userService;
         this.listingRepository = listingRepository;
         this.deliveryRepository = deliveryRepository;
         this.warehouseService = warehouseService;
@@ -51,13 +54,16 @@ public class WarehouseController {
     }
 
     @GetMapping("reference")
-    public String reference() {
+    public String reference(Model model) {
+        List<UserDto> users = userService.findAllUsers();
+        model.addAttribute("users", users);
         return "reference";
     }
 
     @RequestMapping(value = "/reference/check", method = RequestMethod.POST)
     public String reference(
             @RequestParam("type") String type,
+            @RequestParam("user") String userName,
             @RequestParam("dateFrom") @DateTimeFormat(pattern = "yyyy-MM-dd") Date dateFrom,
             @RequestParam("dateTo") @DateTimeFormat(pattern = "yyyy-MM-dd") Date dateTo,
             Model model,
@@ -65,26 +71,28 @@ public class WarehouseController {
     ) {
         switch (type) {
             case "Operator":
-                List<Delivery> deliveriesByOperator = deliveryRepository.findByPeriodAndOperator(dateFrom, dateTo, authentication.getName());
+                List<Delivery> deliveriesByOperator = deliveryRepository.findByPeriodAndOperator(dateFrom, dateTo, userName);
                 model.addAttribute("deliveries", deliveriesByOperator);
-                List<Listing> listingsByOperator = listingRepository.findByPeriodAndOperator(dateFrom, dateTo, authentication.getName());
+                List<Listing> listingsByOperator = listingRepository.findByPeriodAndOperator(dateFrom, dateTo, userName);
                 model.addAttribute("listings", listingsByOperator);
                 return "operator-history";
             case "Deliveries":
                 List<Delivery> deliveries = deliveryRepository.findByPeriod(dateFrom, dateTo);
                 model.addAttribute("deliveries", deliveries);
                 return "deliveries";
-            case "listings":
+            case "Listings":
                 List<Listing> listings = listingRepository.findByPeriod(dateFrom, dateTo);
-                model.addAttribute("deliveries", listings);
-                return "listing";
-            case "stock":
+                model.addAttribute("listings", listings);
+                return "listings";
+            case "Stock":
                 final List<Goods> goods = goodsRepository.findAll();
 
                 final List<GoodsDto> incomeGoodsDtos = goods.stream().map(good ->
                         GoodsDto.builder()
                                 .name(good.getName())
-                                .size(deliveryRepository.findByGoods(
+                                .size(deliveryRepository.findByPeriodAndGood(
+                                        dateFrom,
+                                        dateTo,
                                         good.getName()).stream().map(Delivery::getSize).reduce(Integer::sum).orElse(0))
                                 .build()
                 ).collect(Collectors.toList());
@@ -92,7 +100,9 @@ public class WarehouseController {
                 final List<GoodsDto> soldGoodsDtos = goods.stream().map(good ->
                         GoodsDto.builder()
                                 .name(good.getName())
-                                .size(listingRepository.findByGoods(
+                                .size(listingRepository.findByPeriodAndGood(
+                                        dateFrom,
+                                        dateTo,
                                         good.getName()).stream().map(Listing::getSize).reduce(Integer::sum).orElse(0))
                                 .build()
                 ).collect(Collectors.toList());

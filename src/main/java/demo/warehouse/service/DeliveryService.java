@@ -15,10 +15,5 @@ public interface DeliveryService {
 
     Delivery findID(int id);
 
-    Delivery findByDeliveredAt(Date deliveredAt);
-
-    List<Delivery> findByPeriod(Date dateFrom, Date dateTo);
-    Delivery findBySupplier(String supplier);
-
     List<DeliveryDto> findAllDeliveries();
 }

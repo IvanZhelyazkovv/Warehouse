@@ -6,9 +6,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -25,20 +28,28 @@ public class SpringSecurity {
     }
 
     @Bean
+    public InMemoryUserDetailsManager userDetailsService(PasswordEncoder passwordEncoder) {
+        UserDetails user = User.withUsername("admin@admin.com")
+                .password(passwordEncoder.encode("123qwe"))
+                .roles("ADMIN")
+                .build();
+        return new InMemoryUserDetailsManager(user);
+    }
+
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeHttpRequests((authorize) ->
                         authorize.requestMatchers("/register/**").permitAll()
-                                .requestMatchers("/index").permitAll()
-                                .requestMatchers("/users").hasRole("ADMIN")
-                                .requestMatchers("/defaultConfig").permitAll()
+                                .requestMatchers("/").permitAll()
+//                                .requestMatchers("/index").permitAll()
                                 .requestMatchers("/make/delivery/**").hasAnyRole("ADMIN", "SUPPLIER")
                                 .requestMatchers("/deliveries").hasAnyRole("ADMIN", "OPERATOR")
                                 .requestMatchers("/accept/**").hasAnyRole("ADMIN", "OPERATOR")
                                 .requestMatchers("/reject/**").hasAnyRole("ADMIN", "OPERATOR")
-                                .requestMatchers("/make/listing/**").hasAnyRole("ADMIN", "OPERATOR")
+                                .requestMatchers("/make/listing/**").hasAnyRole("ADMIN", "CLIENT")
                                 .requestMatchers("/stock").hasAnyRole("ADMIN", "OPERATOR")
-                                .requestMatchers("/reference/**").hasAnyRole("ADMIN", "OPERATOR")
+                                .requestMatchers("/reference/**").hasRole("ADMIN")
                                 .requestMatchers("/listings").hasAnyRole("ADMIN", "OPERATOR")
                 ).formLogin(
                         form -> form
